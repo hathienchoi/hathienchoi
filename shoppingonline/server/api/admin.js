@@ -57,7 +57,17 @@ router.get('/categories', JwtUtil.checkToken, async function (req, res) {
   res.json(categories);
 });
 // product
-
+router.post('/products', JwtUtil.checkToken, async function (req, res) {
+  const name = req.body.name;
+  const price = req.body.price;
+  const cid = req.body.category;
+  const image = req.body.image;
+  const now = new Date().getTime(); // milliseconds
+  const category = await CategoryDAO.selectByID(cid);
+  const product = { name: name, price: price, image: image, cdate: now, category: category };
+  const result = await ProductDAO.insert(product);
+  res.json(result);
+});
 router.put('/products/:id', JwtUtil.checkToken, async function (req, res) {
   const _id = req.params.id;
   const name = req.body.name;
